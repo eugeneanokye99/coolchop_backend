@@ -26,7 +26,7 @@ const socketServer = new Server(server);
 
 // WebSocket events
 socketServer.on("connection", () => {
-  console.log("WebSockett connection successful");
+  console.log("WebSocket connection successful");
 });
 socketServer.on("disconnect", () => {
   console.log("WebSocket connection disconnected");
