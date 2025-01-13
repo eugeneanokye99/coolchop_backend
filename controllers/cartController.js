@@ -9,7 +9,7 @@ exports.addToCart = async (req, res) => {
 
 
   if (!userId || !dishId) {
-    return res.status(400).json({ message: 'userId and dishId are required' });
+    return res.status(400).json({ message: 'user_id and dishId are required' });
   }
 
   try {
