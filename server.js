@@ -49,7 +49,7 @@ app.post('/webhook', (req, res) => {
   const payload = req.body;
 
   // Check if the event is a GitHub push event
-  if (req.headers['x-github-event'] === 'push') {
+  if (req.headers['x-github-event'] === 'push' && req.headers['x-github-event'] === 'ping') {
     console.log('Webhook triggered by push event');
 
     // Run deployment commands
