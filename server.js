@@ -8,7 +8,8 @@ const uploadsRoutes = require("./routes/uploadRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const { Server } = require("socket.io");
 const cors = require('cors');
-const http = require('http');  // Import http module to attach WebSocket
+const http = require('http'); 
+const { exec } = require('child_process'); 
 require('dotenv').config();
 const path = require('path');
 
@@ -42,6 +43,31 @@ app.use('/api/order', orderRoutes);
 app.use("/api/upload", uploadsRoutes);
 app.use("/api/cart", cartRoutes);
 
+
+// Webhook Route for CI/CD
+app.post('/webhook', (req, res) => {
+  const payload = req.body;
+
+  // Check if the event is a GitHub push event
+  if (req.headers['x-github-event'] === 'push') {
+    console.log('Webhook triggered by push event');
+
+    // Run deployment commands
+    exec('cd ./coolchop_backend && git pull && npm install && pm2 restart server', (err, stdout, stderr) => {
+      if (err) {
+        console.error('Deployment failed:', stderr);
+        return res.status(500).send('Deployment failed');
+      }
+
+      console.log('Deployment successful:', stdout);
+      res.status(200).send('Deployment successful');
+    });
+  } else {
+    res.status(400).send('Event not handled');
+  }
+});
+
+
 // Sync database  
 sequelize.sync().then(() => {
   console.log('Database synced');    
@@ -50,7 +76,6 @@ sequelize.sync().then(() => {
 });
 
 const PORT = process.env.PORT || 3000;
-const BASE_URL = process.env.BASE_URL || 'http://192.168.68.9:8082'; 
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

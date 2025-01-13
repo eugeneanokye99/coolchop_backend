@@ -27,9 +27,18 @@ const Dish = sequelize.define('Dish', {
     type: DataTypes.TEXT, 
     allowNull: false,
   },
+  description: {
+    type: DataTypes.TEXT, 
+    allowNull: false,
+  },
   restaurantId: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  ratings: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0
   },
   createdAt: {
   type: DataTypes.DATE,

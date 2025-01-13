@@ -162,7 +162,10 @@ exports.getUserData = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const userId = await encrypt(user.id.toString());
+
     res.status(200).json({
+      id: userId,
       name: user.name,
       email: user.email,
       longitude: user.longitude,
@@ -284,5 +287,46 @@ exports.verifyUserId = async (req, res) => {
   } catch (error) {
     console.error('Error verifying token:', error);
     res.status(500).json({ message: 'Error verifying token', error });
+  }
+};
+
+// Update user location
+exports.updateUserLocation = async (req, res) => {
+  try {
+    const { userId } = req.body
+    // Extract token from the Authorization header
+    const token = userId;
+    if (!token) {
+      return res.status(401).json({ error: "Authentication token missing" });
+    }
+
+    // Decrypt token to get user ID
+    const decoded = await decrypt(token);
+    const user = await User.findOne({ where: { id: decoded } });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Extract coordinates and confirmLocation from request body
+    const { latitude, longitude, confirmLocation } = req.body;
+    if (latitude === undefined || longitude === undefined || confirmLocation === undefined) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Update user location and confirmLocation
+    user.latitude = latitude;
+    user.longitude = longitude;
+    user.confirm_location = confirmLocation;
+
+    // Save changes to the database
+    await user.save();
+
+    res.status(200).json({
+      message: "User location updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating user location:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
