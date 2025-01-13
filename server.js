@@ -47,9 +47,10 @@ app.use("/api/cart", cartRoutes);
 // Webhook Route for CI/CD
 app.post('/webhook', (req, res) => {
   const payload = req.body;
+  res.status(200).send('Webhook received');
 
   // Check if the event is a GitHub push event
-  if (req.headers['x-github-event'] === 'push' && req.headers['x-github-event'] === 'ping') {
+  if (req.headers['x-github-event'] === 'push' || req.headers['x-github-event'] === 'ping') {
     console.log('Webhook triggered by push event');
 
     // Run deployment commands
