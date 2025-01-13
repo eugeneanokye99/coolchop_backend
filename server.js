@@ -53,7 +53,7 @@ app.post('/webhook', (req, res) => {
     console.log('Webhook triggered by push event');
 
     // Run deployment commands
-    exec('cd ./coolchop_backend && git pull && npm install && pm2 restart server', (err, stdout, stderr) => {
+    exec('cd /home/ubuntu/coolchop_backend && git pull && npm install && pm2 restart server', (err, stdout, stderr) => {
       if (err) {
         console.error('Deployment failed:', stderr);
         return res.status(500).send('Deployment failed');
