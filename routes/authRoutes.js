@@ -10,4 +10,5 @@ router.get('/me', userController.getUserData);
 router.post("/forgottenPassword",userController.forgottenPassword)
 router.post("/resetPassword",userController.passwordReset);
 router.get("/allUsers",userController.getAllUsers)
+router.put("/update-coordinates",userController.updateUserLocation)
 module.exports = router;

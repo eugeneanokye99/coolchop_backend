@@ -15,6 +15,10 @@ const Restaurant = sequelize.define('Restaurant', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -46,6 +50,11 @@ const Restaurant = sequelize.define('Restaurant', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
+  },
+  ratings: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0
   },
   verificationStatus:{
     type: DataTypes.STRING,
