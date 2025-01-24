@@ -6,6 +6,8 @@ const restaurantRoutes = require('./routes/restaurantRoutes');
 const orderRoutes = require("./routes/ordersRouter");
 const uploadsRoutes = require("./routes/uploadRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const ratingsRoutes = require("./routes/ratingsRoute");
+const reviewRoutes = require("./routes/reviewRoute");
 const { Server } = require("socket.io");
 const cors = require('cors');
 const http = require('http'); 
@@ -26,7 +28,7 @@ const socketServer = new Server(server);
 
 // WebSocket events
 socketServer.on("connection", () => {
-  console.log("WebSockkket connection successful");
+  console.log("WebSocket connection successful");
 });
 socketServer.on("disconnect", () => {
   console.log("WebSocket connection disconnected");
@@ -39,18 +41,19 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/api/user', authRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/restaurant', restaurantRoutes);
-app.use('/api/order', orderRoutes);
+app.use('/api/orders', orderRoutes);
 app.use("/api/upload", uploadsRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/ratings", ratingsRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 
 // Webhook Route for CI/CD
 app.post('/webhook', (req, res) => {
   const payload = req.body;
-  res.status(200).send('Webhook received');
 
   // Check if the event is a GitHub push event
-  if (req.headers['x-github-event'] === 'push' || req.headers['x-github-event'] === 'ping') {
+  if (req.headers['x-github-event'] === 'push') {
     console.log('Webhook triggered by push event');
 
     // Run deployment commands

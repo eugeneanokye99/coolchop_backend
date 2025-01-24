@@ -56,6 +56,11 @@ const Restaurant = sequelize.define('Restaurant', {
     allowNull: false,
     defaultValue: 0
   },
+  reviews: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
   verificationStatus:{
     type: DataTypes.STRING,
     allowNull: false,

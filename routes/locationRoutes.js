@@ -2,7 +2,7 @@ const express = require('express');
 const locationController = require('../controllers/locationController');
 const router = express.Router();
 
-router.get('/confirm', locationController.confirmLocation);
+router.put('/confirm', locationController.updateUserLocation);
 router.get('/check', locationController.getConfirmLocationById);
 
 
