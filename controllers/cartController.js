@@ -9,7 +9,7 @@ exports.addToCart = async (req, res) => {
 
 
   if (!userId || !dishId) {
-    return res.status(400).json({ message: 'user_id and dishId are required' });
+    return res.status(400).json({ message: 'userId and dishId are required' });
   }
 
   try {
@@ -66,5 +66,35 @@ exports.removeFromCart = async (req, res) => {
   } catch (error) {
     console.error('Error removing from cart:', error);
     res.status(500).json({ message: 'Error removing from cart' });
+  }
+};
+
+
+
+exports.updateCartQuantity = async (req, res) => {
+  const { user_id, dishId, quantity } = req.body;
+
+  const userId = await decrypt(user_id.toString());
+
+  if (!userId || !dishId || quantity === undefined) {
+    return res.status(400).json({ message: 'userId, dishId, and quantity are required' });
+  }
+
+  try {
+    // Find the existing item in the cart
+    const cartItem = await Cart.findOne({ where: { userId, dishId } });
+
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Dish not found in cart' });
+    }
+
+    // Update the quantity of the item
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    res.status(200).json({ message: 'Cart item quantity updated', cartItem });
+  } catch (error) {
+    console.error('Error updating cart quantity:', error);
+    res.status(500).json({ message: 'Error updating cart quantity' });
   }
 };
