@@ -10,10 +10,12 @@ const ratingsRoutes = require("./routes/ratingsRoute");
 const reviewRoutes = require("./routes/reviewRoute");
 const { Server } = require("socket.io");
 const cors = require('cors');
-const http = require('http'); 
+const https = require('https'); 
 const { exec } = require('child_process'); 
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
+
 
 
 
@@ -22,17 +24,23 @@ const app = express();
 app.use(cors({origin: "*"}));
 app.use(express.json());
 
+const options = {
+  key: fs.readFileSync('./ssl/key.pem'),
+  cert: fs.readFileSync('./ssl/cert.pem')
+};
+
 // Create HTTP server and attach to Socket.IO
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const socketServer = new Server(server);
 
 // WebSocket events
-socketServer.on("connection", () => {
+socketServer.on("connection", (socket) => {
   console.log("WebSocket connection successful");
+  socket.on("disconnect", () => {
+    console.log("WebSocket connection disconnected");
+  });
 });
-socketServer.on("disconnect", () => {
-  console.log("WebSocket connection disconnected");
-});
+
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -65,7 +73,6 @@ app.post('/webhook', (req, res) => {
       }
 
       console.log('Deployment successful:', stdout);
-      res.status(200).send('Deployment successful');
     });
   } else {
     res.status(400).send('Event not handled');
@@ -81,7 +88,7 @@ sequelize.sync().then(() => {
   console.error('Unable to sync database:', err);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 443;
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
