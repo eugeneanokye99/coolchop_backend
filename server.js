@@ -11,7 +11,6 @@ const reviewRoutes = require("./routes/reviewRoute");
 const { Server } = require("socket.io");
 const cors = require('cors');
 const http = require('http'); 
-const { exec } = require('child_process'); 
 require('dotenv').config();
 const path = require('path');
 
@@ -46,32 +45,6 @@ app.use("/api/upload", uploadsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/ratings", ratingsRoutes);
 app.use("/api/reviews", reviewRoutes);
-
-
-// Webhook Route for CI/CD
-app.post('/webhook', (req, res) => {
-  const payload = req.body;
-  res.status(200).send('Webhook received');
-
-  // Check if the event is a GitHub push event
-  if (req.headers['x-github-event'] === 'push' || req.headers['x-github-event'] === 'ping') {
-    console.log('Webhook triggered by push event');
-
-    // Run deployment commands
-    exec('cd /home/ubuntu/coolchop_backend && git pull && npm install && pm2 restart server', (err, stdout, stderr) => {
-      if (err) {
-        console.error('Deployment failed:', stderr);
-        return res.status(500).send('Deployment failed');
-      }
-
-      console.log('Deployment successful:', stdout);
-      res.status(200).send('Deployment successful');
-    });
-  } else {
-    res.status(400).send('Event not handled');
-  }
-});
-
 
 
 // Sync database  
