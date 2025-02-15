@@ -30,7 +30,7 @@ socketServer.on("connection", () => {
   console.log("WebSocket connection successful");
 });
 socketServer.on("disconnect", () => {
-  console.log("WebSocket connection disconnected");
+  console.log("WebSockett connection disconnected");
 });
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
