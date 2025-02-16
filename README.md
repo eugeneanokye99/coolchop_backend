@@ -1,1 +1,0 @@
-# coolchop_backend
