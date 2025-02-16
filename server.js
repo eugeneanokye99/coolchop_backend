@@ -43,7 +43,7 @@ app.post("/webhook", (req, res) => {
     req.headers["x-github-event"] === "push" ||
     req.headers["x-github-event"] === "ping"
   ) {
-    console.log("Webbhook triggered by push event");
+    console.log("Webhook triggered by push event");
     // Run deployment commands
     exec(
       "cd /home/ubuntu/coolchop_backend && git pull && npm install && pm2 restart server",
