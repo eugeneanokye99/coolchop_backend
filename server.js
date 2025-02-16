@@ -35,6 +35,32 @@ socketServer.on("disconnect", () => {
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+// Webhook Route for CI/CD
+app.post("/webhook", (req, res) => {
+  const payload = req.body;
+  res.status(200).send("Webhook received");
+  // Check if the event is a GitHub push event
+  if (
+    req.headers["x-github-event"] === "push" ||
+    req.headers["x-github-event"] === "ping"
+  ) {
+    console.log("Webhook triggered by push event");
+    // Run deployment commands
+    exec(
+      "cd /home/ubuntu/coolchop_backend && git pull && npm install && pm2 restart server",
+      (err, stdout, stderr) => {
+        if (err) {
+          console.error("Deployment failed:", stderr);
+          return res.status(500).send("Deployment failed");
+        }
+        console.log("Deployment successful:", stdout);
+      }
+    );
+  } else {
+    res.status(400).send("Event not handled");
+  }
+});
+
 
 // API Routes
 app.use('/api/user', authRoutes);
