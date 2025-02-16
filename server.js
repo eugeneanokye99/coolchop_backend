@@ -43,7 +43,9 @@ socketServer.on("connection", (socket) => {
 
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
-
+app.get("/",(req,res)=>{
+res.send("hello express")
+})
 
 // API Routes
 app.use('/api/user', authRoutes);
@@ -88,7 +90,7 @@ sequelize.sync().then(() => {
   console.error('Unable to sync database:', err);
 });
 
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 3001;
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
